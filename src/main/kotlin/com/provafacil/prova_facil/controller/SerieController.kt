@@ -1,14 +1,11 @@
 package com.provafacil.prova_facil.controller
 
 import com.provafacil.prova_facil.model.Serie
+import com.provafacil.prova_facil.model.request.PostSerieRequest
 import com.provafacil.prova_facil.model.request.PutSerieRequest
 import com.provafacil.prova_facil.service.SerieService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/serie")
@@ -26,7 +23,20 @@ class SerieController (
     }
 
     @PutMapping("/{id}")
-    fun atualizarSerie(@PathVariable id: Int, @RequestBody request : PutSerieRequest):Serie{
-        return service.buscarSeriePorId(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun atualizarSerie(@PathVariable id: Int, @RequestBody put : PutSerieRequest){
+        val serie = service.buscarSeriePorId(id);
+        service.atualizarSerie(put.toSerieModel(serie));
+    }
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun excluirSerie(@PathVariable id: Int){
+        service.excluirSerie(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun criarSerie(@RequestBody post : PostSerieRequest){
+        service.adicionarSerie(post.toSerieModel());
     }
 }

@@ -8,9 +8,19 @@ import org.springframework.stereotype.Service
 class SerieService(
     private val repository: SerieRepository
 ) {
-    fun buscarTodasSeries(): List<Serie> = repository.findAll();
+    fun buscarTodasSeries(): List<Serie> = repository.findAll().sortedBy { it.id };
 
     fun buscarSeriePorId(id: Int): Serie = repository.findById(id).get();
 
-    fun atualizarSerie(servie: Serie) = repository.save(servie);
+    fun atualizarSerie(serie: Serie) {
+        repository.save(serie);
+    }
+    fun adicionarSerie(serie: Serie) {
+        repository.save(serie);
+    }
+
+    fun excluirSerie(id: Int) {
+        repository.deleteById(id);
+    }
+
 }

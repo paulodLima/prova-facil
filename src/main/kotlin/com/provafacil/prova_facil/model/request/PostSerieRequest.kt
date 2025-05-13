@@ -2,13 +2,12 @@ package com.provafacil.prova_facil.model.request
 
 import com.provafacil.prova_facil.model.Serie
 
-data class PutSerieRequest(
+data class PostSerieRequest(
     val nome: String
 ) {
-    fun toSerieModel(serie: Serie): Serie {
+    fun toSerieModel(): Serie {
         return Serie(
-            id = serie.id,
-            nome = this.nome ?: serie.nome,
+            nome = this.nome
         )
     }
 }
