@@ -5,18 +5,21 @@ import com.provafacil.prova_facil.model.request.PostProfessorRequest
 import com.provafacil.prova_facil.model.request.PutProfessorRequest
 import com.provafacil.prova_facil.model.response.ProfessorResponse
 import com.provafacil.prova_facil.service.ProfessorService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/professor", produces = [MediaType.APPLICATION_JSON_VALUE])
 class ProfessorController(val service: ProfessorService) {
 
-    @GetMapping("/email")
+    @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
-    fun buscarProfessorPorEmail(@RequestParam email: String): Professor? {
-        return service.listarProfessorByEmail(email);
+    fun buscarProfessorPorEmail(@PathVariable email: String): ProfessorResponse? {
+        val response = service.listarProfessorByEmail(email);
+        return ProfessorResponse(nome = response!!.nome, email = response.email, roles = response.roles);
     }
 
     @GetMapping
@@ -26,6 +29,7 @@ class ProfessorController(val service: ProfessorService) {
             ProfessorResponse(
                 nome = professor.nome,
                 email = professor.email,
+                roles = professor.roles
             )
         }
 
@@ -44,7 +48,7 @@ class ProfessorController(val service: ProfessorService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun adicionarProfessor(@RequestBody professor: PostProfessorRequest) {
+    fun adicionarProfessor(@RequestBody @Valid professor: PostProfessorRequest) {
         service.adicionarProfessor(professor.toProfessorModel());
     }
 }

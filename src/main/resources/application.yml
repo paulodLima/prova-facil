@@ -11,4 +11,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  jackson:
+    default-property-inclusion: non_null
 
+jwt:
+  secret: 8e87a3be-40ab-4a63-9653-7356fac69aa3-1e3a3fd9-5946-455b-be17-5325c38e6d34
+  expiration: 1200000

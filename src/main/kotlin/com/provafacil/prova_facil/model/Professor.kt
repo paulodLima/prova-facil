@@ -1,5 +1,6 @@
 package com.provafacil.prova_facil.model
 
+import com.provafacil.prova_facil.model.enums.Roles
 import jakarta.persistence.*
 
 @Entity
@@ -14,5 +15,15 @@ data class Professor(
     @Column(unique = true)
     val email: String,
 
-    val senha: String
+    val senha: String,
+
+    @ElementCollection(targetClass = Roles::class, fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "professor_roles",
+        joinColumns = [JoinColumn(name = "professor_id")]
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "roles")
+    val roles: Set<Roles> = setOf()
+
 )
