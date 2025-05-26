@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PerguntaRepository : JpaRepository<Pergunta, Int> {
+interface PerguntaRepository : JpaRepository<Pergunta, Long> {
     fun findByProfessorId(professorId: Int, pageable: Pageable): Page<Pergunta>
 }

@@ -9,7 +9,7 @@ data class AlternativaErrada(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    val texto: String,
+    var texto: String,
 
     @ManyToOne
     @JsonIgnore

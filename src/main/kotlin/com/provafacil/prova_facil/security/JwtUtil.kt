@@ -46,7 +46,7 @@ class JwtUtil {
     fun isTokenExpiringSoon(token: String): Boolean {
         val expiration = getClaims(token).expiration.time
         val remaining = expiration - System.currentTimeMillis()
-        return remaining < 60_000 // menos de 1 minuto
+        return remaining < 60_000
     }
 
     fun getSubject(token: String): String = getClaims(token).subject

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface AssuntoService : JpaRepository<Assunto, Int> {
+interface AssuntoRepository : JpaRepository<Assunto, Long> {
 }

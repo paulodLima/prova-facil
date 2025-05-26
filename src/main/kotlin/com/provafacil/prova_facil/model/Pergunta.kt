@@ -1,6 +1,8 @@
 package com.provafacil.prova_facil.model
 
+import com.provafacil.prova_facil.model.enums.NivelDificuldade
 import com.provafacil.prova_facil.model.enums.TipoPergunta
+import com.provafacil.prova_facil.model.request.PostPerguntaRequest
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
@@ -12,20 +14,23 @@ data class Pergunta(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    val enunciado: String,
+    var enunciado: String,
 
     @Enumerated(EnumType.STRING)
-    val tipo: TipoPergunta,
+    var tipo: TipoPergunta,
 
-    val respostaCorreta: String? = null,
+    var respostaCorreta: String? = null,
+
+    @Enumerated(EnumType.STRING)
+    var nivel: NivelDificuldade,
 
     @ManyToOne
     @JoinColumn(name = "serie_id")
-    val serie: Serie,
+    var serie: Serie,
 
     @ManyToOne
     @JoinColumn(name = "assunto_id")
-    val assunto: Assunto,
+    var assunto: Assunto,
 
     @ManyToOne
     @JoinColumn(name = "professor_id")
@@ -35,6 +40,6 @@ data class Pergunta(
     val dataCriacao: LocalDateTime = LocalDateTime.now(),
 
     @OneToMany(mappedBy = "pergunta", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val alternativasErradas: List<AlternativaErrada> = emptyList()
+    val alternativasErradas: MutableList<AlternativaErrada> = mutableListOf()
 )
 

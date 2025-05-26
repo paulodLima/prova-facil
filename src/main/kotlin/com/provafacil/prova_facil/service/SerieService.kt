@@ -10,7 +10,7 @@ class SerieService(
 ) {
     fun buscarTodasSeries(): List<Serie> = repository.findAll().sortedBy { it.id };
 
-    fun buscarSeriePorId(id: Int): Serie = repository.findById(id).get();
+    fun buscarSeriePorId(id: Long): Serie = repository.findById(id).get();
 
     fun atualizarSerie(serie: Serie) {
         repository.save(serie);
@@ -19,7 +19,7 @@ class SerieService(
         repository.save(serie);
     }
 
-    fun excluirSerie(id: Int) {
+    fun excluirSerie(id: Long) {
         repository.deleteById(id);
     }
 

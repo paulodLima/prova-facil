@@ -1,25 +1,97 @@
 package com.provafacil.prova_facil.service
 
+import com.provafacil.prova_facil.model.AlternativaErrada
 import com.provafacil.prova_facil.model.Pergunta
+import com.provafacil.prova_facil.model.enums.NivelDificuldade
+import com.provafacil.prova_facil.model.enums.TipoPergunta
+import com.provafacil.prova_facil.model.request.PerguntasRequest
+import com.provafacil.prova_facil.model.request.PostPerguntaRequest
 import com.provafacil.prova_facil.model.response.PerguntasResponse
+import com.provafacil.prova_facil.repository.AssuntoRepository
 import com.provafacil.prova_facil.repository.PerguntaRepository
+import com.provafacil.prova_facil.repository.ProfessorRepository
+import com.provafacil.prova_facil.repository.SerieRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
 class PerguntaService (
-    private val repository: PerguntaRepository
+    private val repository: PerguntaRepository,
+    private val serieRepository: SerieRepository,
+    private val assuntoRepository: AssuntoRepository,
+    private val professorRepository: ProfessorRepository
 ){
-    fun litarTodasPerguntas(pegeable: Pageable, userId: Long): Page<PerguntasResponse>? {
-        return repository.findAll(pegeable).map { PerguntasResponse(it) }
+    fun litarTodasPerguntas(pegeable: Pageable, userId: Long): Page<PerguntasRequest>? {
+        return repository.findAll(pegeable).map { PerguntasRequest(it) }
     }
-    fun litarTodasPerguntasPorProfessor(pegeable: Pageable, userId: Int): Page<PerguntasResponse>? {
-        //return repository.findAll(pegeable).map { PerguntasResponse(it) }
-        return repository.findByProfessorId(userId,pegeable).map { PerguntasResponse(it) }
+    fun litarTodasPerguntasPorProfessor(pegeable: Pageable, userId: Int): Page<PerguntasRequest>? {
+        return repository.findByProfessorId(userId,pegeable).map { PerguntasRequest(it) }
     }
 
-    fun buscarPorId(id: Int): Pergunta? {
-        return repository.findById(id).orElse(null);
+    fun buscarPorId(id: Long): PerguntasRequest {
+        val response =  repository.findById(id).orElse(null);
+        return PerguntasRequest(response);
+    }
+
+    fun atualizarPergunta(put: PerguntasResponse) {
+        val pergunta = repository.findById(put.id)
+            .orElseThrow { RuntimeException("Pergunta com ID ${put.id} não encontrada") }
+
+        pergunta.enunciado = put.enunciado ?: pergunta.enunciado
+        pergunta.tipo = put.tipo.let { TipoPergunta.fromCodigo(it) } ?: pergunta.tipo
+        pergunta.nivel = put.nivel.let { NivelDificuldade.valueOf(it) } ?: pergunta.nivel
+        pergunta.respostaCorreta = put.respostaCorreta ?: pergunta.respostaCorreta
+
+        put.serie.let {
+            pergunta.serie = serieRepository.findById(it)
+                .orElseThrow { RuntimeException("Série com ID $it não encontrada") }
+        }
+
+        put.assunto.let {
+            pergunta.assunto = assuntoRepository.findById(it)
+                .orElseThrow { RuntimeException("Assunto com ID $it não encontrado") }
+        }
+
+        repository.save(pergunta)
+    }
+
+    fun criarPergunta(dto: PostPerguntaRequest) {
+        val serie = serieRepository.findById(dto.serie)
+            .orElseThrow { RuntimeException("Série não encontrada") }
+
+        val assunto = assuntoRepository.findById(dto.assunto)
+            .orElseThrow { RuntimeException("Assunto não encontrado") }
+
+        val professor = professorRepository.findById(dto.professor)
+            .orElseThrow { RuntimeException("Professor não encontrado") }
+
+
+        val pergunta = Pergunta (
+            enunciado = dto.enunciado,
+            tipo = when (dto.tipo) {
+                1L -> TipoPergunta.MULTIPLAESCOLHA
+                2L -> TipoPergunta.DISSERTATIVA
+                else -> throw IllegalArgumentException("Tipo inválido")
+            },
+            respostaCorreta = dto.respostaCorreta,
+            nivel = NivelDificuldade.valueOf(dto.dificuldade),
+            serie = serie,
+            assunto = assunto,
+            professor = professor
+        )
+        dto.alternativasErradas.forEach {
+            pergunta.alternativasErradas.add(
+                AlternativaErrada(
+                    texto = it.texto,
+                    pergunta = pergunta
+                )
+            )
+        }
+        repository.save(pergunta)
+    }
+
+    fun excluirPergunta(id: Long) {
+        repository.deleteById(id)
     }
 }
