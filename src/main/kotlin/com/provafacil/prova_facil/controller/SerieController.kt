@@ -1,12 +1,8 @@
 package com.provafacil.prova_facil.controller
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.provafacil.prova_facil.model.Serie
 import com.provafacil.prova_facil.model.request.PostSerieRequest
 import com.provafacil.prova_facil.model.request.PutSerieRequest
-import com.provafacil.prova_facil.model.response.SerieResponse
 import com.provafacil.prova_facil.service.SerieService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -40,7 +36,7 @@ class SerieController (
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun criarSerie(@RequestBody post : PostSerieRequest){
-        service.adicionarSerie(post.toSerieModel());
+    fun criarSerie(@RequestBody post: PostSerieRequest) {
+        service.adicionarSerie(post.toSerieModel())
     }
 }
