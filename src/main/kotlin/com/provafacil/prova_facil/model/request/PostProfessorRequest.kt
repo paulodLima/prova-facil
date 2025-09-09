@@ -16,7 +16,9 @@ data class PostProfessorRequest(
     val email: String,
 
     @field:NotEmpty(message = "senha deve ser informada")
-    val senha: String
+    val senha: String,
+
+    val disciplina: String,
 ) {
     fun toProfessorModel(): Professor {
         if (nome.isBlank() || email.isBlank() || senha.isBlank()) {
@@ -25,7 +27,8 @@ data class PostProfessorRequest(
         return Professor (
             nome = this.nome,
             email = this.email,
-            senha = this.senha
+            senha = this.senha,
+            disciplina = disciplina,
         )
     }
 }

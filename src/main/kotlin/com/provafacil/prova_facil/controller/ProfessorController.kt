@@ -1,14 +1,14 @@
 package com.provafacil.prova_facil.controller
 
-import com.provafacil.prova_facil.model.Professor
+import com.provafacil.prova_facil.model.enums.Disciplina
 import com.provafacil.prova_facil.model.request.PostProfessorRequest
 import com.provafacil.prova_facil.model.request.PutProfessorRequest
+import com.provafacil.prova_facil.model.response.DisciplinaResponse
 import com.provafacil.prova_facil.model.response.ProfessorResponse
 import com.provafacil.prova_facil.service.ProfessorService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -19,7 +19,7 @@ class ProfessorController(val service: ProfessorService) {
     @ResponseStatus(HttpStatus.OK)
     fun buscarProfessorPorEmail(@PathVariable email: String): ProfessorResponse? {
         val response = service.listarProfessorByEmail(email);
-        return ProfessorResponse(nome = response!!.nome, email = response.email, roles = response.roles);
+        return ProfessorResponse(nome = response!!.nome, email = response.email, roles = response.roles, disciplina = response.disciplina);
     }
 
     @GetMapping
@@ -29,7 +29,8 @@ class ProfessorController(val service: ProfessorService) {
             ProfessorResponse(
                 nome = professor.nome,
                 email = professor.email,
-                roles = professor.roles
+                roles = professor.roles,
+                disciplina = professor.disciplina
             )
         }
 
@@ -50,5 +51,15 @@ class ProfessorController(val service: ProfessorService) {
     @ResponseStatus(HttpStatus.CREATED)
     fun adicionarProfessor(@RequestBody @Valid professor: PostProfessorRequest) {
         service.adicionarProfessor(professor.toProfessorModel());
+    }
+
+    @GetMapping("/materias")
+    fun listarMaterias(): List<DisciplinaResponse> {
+        return Disciplina.entries.map {
+            DisciplinaResponse(
+                codigo = it.name,
+                descricao = it.descricao
+            )
+        }
     }
 }

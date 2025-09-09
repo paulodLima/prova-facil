@@ -17,6 +17,8 @@ data class Professor(
 
     val senha: String,
 
+    val disciplina: String,
+
     @ElementCollection(targetClass = Roles::class, fetch = FetchType.EAGER)
     @CollectionTable(
         name = "professor_roles",

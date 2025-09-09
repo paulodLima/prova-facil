@@ -28,6 +28,7 @@ class SecurityConfig(
 
     private val PUBLIC_POST_MATHCHERS = arrayOf(
         "/api/professor",
+        "/api/professor/materias",
         "/login"
     )
 
