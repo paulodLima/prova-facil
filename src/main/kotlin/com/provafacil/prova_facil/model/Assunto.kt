@@ -1,5 +1,6 @@
 package com.provafacil.prova_facil.model
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 
 @Entity
@@ -9,5 +10,10 @@ data class Assunto(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    val nome: String
+    val nome: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "disciplina_id", nullable = false)
+    @JsonBackReference
+    val disciplina: Disciplina
 )

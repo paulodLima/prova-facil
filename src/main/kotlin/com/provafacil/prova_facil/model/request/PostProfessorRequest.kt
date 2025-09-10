@@ -1,5 +1,6 @@
 package com.provafacil.prova_facil.model.request
 
+import com.provafacil.prova_facil.model.Disciplina
 import com.provafacil.prova_facil.model.Professor
 import com.provafacil.prova_facil.model.Serie
 import com.provafacil.prova_facil.validation.EmailAvailable
@@ -19,8 +20,10 @@ data class PostProfessorRequest(
     val senha: String,
 
     val disciplina: String,
+
+    val disciplinaId: Long,
 ) {
-    fun toProfessorModel(): Professor {
+    fun toProfessorModel(disciplinaId: Disciplina): Professor {
         if (nome.isBlank() || email.isBlank() || senha.isBlank()) {
             throw IllegalArgumentException("Nome, email e senha são obrigatórios.")
         }
@@ -28,7 +31,8 @@ data class PostProfessorRequest(
             nome = this.nome,
             email = this.email,
             senha = this.senha,
-            disciplina = disciplina,
+            disciplinaDesc = disciplina,
+            disciplina = disciplinaId
         )
     }
 }

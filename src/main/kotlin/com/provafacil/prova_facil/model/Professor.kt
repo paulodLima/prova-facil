@@ -17,7 +17,8 @@ data class Professor(
 
     val senha: String,
 
-    val disciplina: String,
+    @Column(name = "disciplina")
+    val disciplinaDesc: String,
 
     @ElementCollection(targetClass = Roles::class, fetch = FetchType.EAGER)
     @CollectionTable(
@@ -26,6 +27,9 @@ data class Professor(
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "roles")
-    val roles: Set<Roles> = setOf()
+    val roles: Set<Roles> = setOf(),
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "disciplina_id", nullable = false)
+    val disciplina: Disciplina
 )

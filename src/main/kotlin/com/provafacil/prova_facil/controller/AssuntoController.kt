@@ -10,13 +10,15 @@ import com.provafacil.prova_facil.model.response.AssuntoResponse
 import com.provafacil.prova_facil.model.response.SerieResponse
 import com.provafacil.prova_facil.repository.AssuntoRepository
 import com.provafacil.prova_facil.service.AssuntoService
+import com.provafacil.prova_facil.service.DisciplinaService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/assunto")
 class AssuntoController (
-    private val service: AssuntoService
+    private val service: AssuntoService,
+    private val disciplinaService: DisciplinaService
 ){
     @GetMapping
     fun buscarTodasSerie():List<Assunto>{
@@ -32,7 +34,8 @@ class AssuntoController (
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun atualizarSerie(@PathVariable id: Long, @RequestBody put : PutAssuntoRequest){
         val serie = service.buscarAssuntoPorId(id);
-        service.atualizarAssunto(put.toAssuntoModel(serie));
+        val disciplina = disciplinaService.buscarDisciplinaPorId(put.disciplinaId);
+        service.atualizarAssunto(put.toAssuntoModel(serie, disciplina));
     }
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -43,6 +46,7 @@ class AssuntoController (
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun criarSerie(@RequestBody post : PostAssuntoRequest){
-        service.adicionarAssunto(post.toAssuntoModel());
+        val disciplina = disciplinaService.buscarDisciplinaPorId(post.disciplinaId);
+        service.adicionarAssunto(post.toAssuntoModel(disciplina));
     }
 }

@@ -13,6 +13,6 @@ data class ProfessorResponse(
         nome = professor.nome,
         email = professor.email,
         roles = professor.roles,
-        disciplina = professor.disciplina
+        disciplina = professor.disciplinaDesc
     )
 }
