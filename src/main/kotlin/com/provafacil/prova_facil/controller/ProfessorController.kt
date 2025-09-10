@@ -1,6 +1,5 @@
 package com.provafacil.prova_facil.controller
 
-import com.provafacil.prova_facil.model.Professor
 import com.provafacil.prova_facil.model.enums.Disciplina
 import com.provafacil.prova_facil.model.request.PostProfessorRequest
 import com.provafacil.prova_facil.model.request.PutProfessorRequest
@@ -26,9 +25,15 @@ class ProfessorController(val service: ProfessorService, val disciplinaService: 
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun listarTodosProfessores(): List<Professor> =
-        service.listarTodos();
-
+    fun listarTodosProfessores(): List<ProfessorResponse> =
+        service.listarTodos().map { professor ->
+            ProfessorResponse(
+                nome = professor.nome,
+                email = professor.email,
+                roles = professor.roles,
+                disciplina = professor.disciplinaDesc
+            )
+        }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
