@@ -15,6 +15,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping("api/prova")
@@ -33,18 +35,19 @@ class ProvaController(val provaService: ProvaService, val resourceLoader: Resour
     fun gerarPdf(@RequestBody request: ProvaRequest, principal: Principal): ResponseEntity<ByteArray> {
         val userId = principal.name.toInt()
         val prova = provaService.gerarProva(userId, request)
+        val dataHoraAtual = LocalDateTime.now()
+        val formato = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm")
+        val dataHoraFormatada = dataHoraAtual.format(formato)
 
         val resource = resourceLoader.getResource("classpath:relatoriosjasper/prova.jasper")
         val inputStream = resource.inputStream
-        //val jasperReport = JRLoader.loadObject(inputStream) as JasperReport
-
-        // Cabeçalho (parâmetros)
         val parametros = mapOf(
             "logo" to this::class.java.getResourceAsStream("/imagens/seduc.png"),
             "cepmg" to this::class.java.getResourceAsStream("/imagens/CEPMG.png"),
             "serie" to prova.serie,
             "professor" to prova.professor,
-            "disciplina" to prova.disciplina
+            "disciplina" to prova.disciplina,
+            "dataHora" to dataHoraFormatada
         )
 
         // Lista de perguntas

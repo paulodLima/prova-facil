@@ -21,6 +21,10 @@ data class Pergunta(
 
     var respostaCorreta: String? = null,
 
+    @Lob
+    @Column(name = "imagem")
+    val imagem: ByteArray? = null,
+
     @Enumerated(EnumType.STRING)
     var nivel: NivelDificuldade,
 

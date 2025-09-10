@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface AlternativaErradaRepository : JpaRepository<AlternativaErrada, Int> {
+    fun findByPerguntaId(perguntaId: Long): List<AlternativaErrada>
 }

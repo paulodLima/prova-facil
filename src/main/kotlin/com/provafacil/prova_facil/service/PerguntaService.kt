@@ -7,10 +7,7 @@ import com.provafacil.prova_facil.model.enums.TipoPergunta
 import com.provafacil.prova_facil.model.request.PerguntasRequest
 import com.provafacil.prova_facil.model.request.PostPerguntaRequest
 import com.provafacil.prova_facil.model.response.PerguntasResponse
-import com.provafacil.prova_facil.repository.AssuntoRepository
-import com.provafacil.prova_facil.repository.PerguntaRepository
-import com.provafacil.prova_facil.repository.ProfessorRepository
-import com.provafacil.prova_facil.repository.SerieRepository
+import com.provafacil.prova_facil.repository.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -20,7 +17,8 @@ class PerguntaService (
     private val repository: PerguntaRepository,
     private val serieRepository: SerieRepository,
     private val assuntoRepository: AssuntoRepository,
-    private val professorRepository: ProfessorRepository
+    private val professorRepository: ProfessorRepository,
+    private val alternativaErradaRepository: AlternativaErradaRepository
 ){
     fun litarTodasPerguntas(pegeable: Pageable, userId: Long): Page<PerguntasRequest>? {
         return repository.findAll(pegeable).map { PerguntasRequest(it) }
@@ -38,9 +36,9 @@ class PerguntaService (
         val pergunta = repository.findById(put.id)
             .orElseThrow { RuntimeException("Pergunta com ID ${put.id} não encontrada") }
 
-        pergunta.enunciado = put.enunciado ?: pergunta.enunciado
-        pergunta.tipo = put.tipo.let { TipoPergunta.fromCodigo(it) } ?: pergunta.tipo
-        pergunta.nivel = put.nivel.let { NivelDificuldade.valueOf(it) } ?: pergunta.nivel
+        pergunta.enunciado = put.enunciado
+        pergunta.tipo = put.tipo.let { TipoPergunta.fromCodigo(it) }
+        pergunta.nivel = put.nivel.let { NivelDificuldade.valueOf(it) }
         pergunta.respostaCorreta = put.respostaCorreta ?: pergunta.respostaCorreta
 
         put.serie.let {
@@ -53,6 +51,11 @@ class PerguntaService (
                 .orElseThrow { RuntimeException("Assunto com ID $it não encontrado") }
         }
 
+        if(put.tipo == TipoPergunta.DISSERTATIVA.codigo){
+            alternativaErradaRepository.findByPerguntaId(put.id).forEach {
+                alternativaErradaRepository.delete(it)
+            }
+        }
         repository.save(pergunta)
     }
 

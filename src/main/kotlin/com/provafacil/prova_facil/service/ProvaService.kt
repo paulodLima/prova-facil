@@ -61,11 +61,12 @@ class ProvaService(private val repository: PerguntaRepository) {
         return ProvaDTO(
             serie = perguntas.firstOrNull()?.serie?.nome ?: "",
             professor = perguntas.firstOrNull()?.professor?.nome?.uppercase() ?: "",
-            disciplina = perguntas.firstOrNull()?.assunto?.nome?.uppercase() ?: "",
+            disciplina = perguntas.firstOrNull()?.professor?.disciplina?.uppercase() ?: "",
             perguntas = perguntas.map {
                 PerguntaDTO(
                     enunciado = it.enunciado,
                     respostaCorreta = it.respostaCorreta,
+                    tipo = it.tipo,
                     alternativas = it.alternativasErradas.map { alt -> Alternativa(alt.texto) }
                 )
             }
