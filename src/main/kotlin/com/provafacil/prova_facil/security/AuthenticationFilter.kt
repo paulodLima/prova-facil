@@ -32,6 +32,24 @@ class AuthenticationFilter(
         }
     }
 
+    override fun unsuccessfulAuthentication(
+        request: HttpServletRequest?,
+        response: HttpServletResponse?,
+        failed: org.springframework.security.core.AuthenticationException?
+    ) {
+        response?.status = HttpServletResponse.SC_UNAUTHORIZED
+        response?.contentType = "application/json;charset=UTF-8"
+
+        val errorResponse = mapOf(
+            "error" to "Falha de autenticação",
+            "message" to (failed?.cause?.message ?: failed?.message ?: "Erro inesperado"),
+            "code" to "99"
+        )
+
+        val mapper = jacksonObjectMapper()
+        response?.writer?.write(mapper.writeValueAsString(errorResponse))
+    }
+
     override fun successfulAuthentication(
         request: HttpServletRequest?,
         response: HttpServletResponse?,

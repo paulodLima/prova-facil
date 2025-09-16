@@ -1,6 +1,8 @@
 package com.provafacil.prova_facil.model
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.provafacil.prova_facil.model.enums.Roles
 import jakarta.persistence.*
 
@@ -42,5 +44,10 @@ data class Professor(
         inverseJoinColumns = [JoinColumn(name = "serie_id")]
     )
     @JsonIgnore
-    val series: MutableSet<Serie> = mutableSetOf()
+    val series: MutableSet<Serie> = mutableSetOf(),
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "escola_id")
+    @JsonBackReference
+    val escola: Escola? = null
 )

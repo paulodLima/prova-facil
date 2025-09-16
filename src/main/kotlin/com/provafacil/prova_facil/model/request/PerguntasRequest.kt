@@ -6,6 +6,7 @@ import com.provafacil.prova_facil.model.Serie
 import com.provafacil.prova_facil.model.enums.TipoPergunta
 import com.provafacil.prova_facil.model.response.AlternativaErradaResponse
 import com.provafacil.prova_facil.model.response.AssuntoResponse
+import com.provafacil.prova_facil.model.response.DisciplinaResponse
 import com.provafacil.prova_facil.model.response.ProfessorResponse
 import java.time.LocalDateTime
 
@@ -26,6 +27,8 @@ data class PerguntasRequest (
 
     val assunto: AssuntoResponse,
 
+    val disciplina: DisciplinaResponse,
+
     val professor: ProfessorResponse,
 
     val dataCriacao: LocalDateTime,
@@ -39,6 +42,7 @@ data class PerguntasRequest (
         tipo = pergunta.tipo.name,
         serie = pergunta.serie,
         assunto = AssuntoResponse(pergunta.assunto),
+        disciplina = DisciplinaResponse(pergunta.assunto.disciplina),
         dataCriacao = pergunta.dataCriacao,
         nivel = pergunta.nivel.toString(),
         imagem = pergunta.imagem,
