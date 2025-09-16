@@ -1,26 +1,31 @@
 package com.provafacil.prova_facil.controller
 
-import com.provafacil.prova_facil.model.enums.Disciplina
+import com.provafacil.prova_facil.model.Disciplina
 import com.provafacil.prova_facil.model.request.PostProfessorRequest
 import com.provafacil.prova_facil.model.request.PutProfessorRequest
+import com.provafacil.prova_facil.model.request.ResetSenhaRequest
 import com.provafacil.prova_facil.model.response.DisciplinaResponse
 import com.provafacil.prova_facil.model.response.ProfessorResponse
+import com.provafacil.prova_facil.security.JwtUtil
 import com.provafacil.prova_facil.service.DisciplinaService
 import com.provafacil.prova_facil.service.ProfessorService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @RequestMapping("api/professor", produces = [MediaType.APPLICATION_JSON_VALUE])
-class ProfessorController(val service: ProfessorService, val disciplinaService: DisciplinaService) {
+class ProfessorController(val service: ProfessorService, val disciplinaService: DisciplinaService,
+                          private val passwordEncoder: PasswordEncoder,private val jwtService: JwtUtil) {
 
     @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
     fun buscarProfessorPorEmail(@PathVariable email: String): ProfessorResponse? {
         val response = service.listarProfessorByEmail(email);
-        return ProfessorResponse(nome = response!!.nome, email = response.email, roles = response.roles, disciplina = response.disciplinaDesc);
+        return ProfessorResponse(nome = response!!.nome, email = response.email, roles = response.roles);
     }
 
     @GetMapping
@@ -31,7 +36,6 @@ class ProfessorController(val service: ProfessorService, val disciplinaService: 
                 nome = professor.nome,
                 email = professor.email,
                 roles = professor.roles,
-                disciplina = professor.disciplinaDesc
             )
         }
 
@@ -39,8 +43,7 @@ class ProfessorController(val service: ProfessorService, val disciplinaService: 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun atualizarProfessor(@PathVariable id: Int,@RequestBody put: PutProfessorRequest) {
         val professor = service.buscarPorId(id);
-        val disciplina = disciplinaService.buscarDisciplinaPorId(put.disciplinaId.id);
-        service.atualizar(put.toProfessorModel(professor,disciplina))
+        service.atualizar(put.toProfessorModel(professor))
     }
 
     @DeleteMapping("/{id}")
@@ -52,17 +55,20 @@ class ProfessorController(val service: ProfessorService, val disciplinaService: 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun adicionarProfessor(@RequestBody @Valid professor: PostProfessorRequest) {
-        val disciplina = disciplinaService.buscarDisciplinaPorId(professor.disciplinaId);
-        service.adicionarProfessor(professor.toProfessorModel(disciplina));
+        service.adicionarProfessor(professor);
     }
 
-    @GetMapping("/materias")
-    fun listarMaterias(): List<DisciplinaResponse> {
-        return Disciplina.entries.map {
-            DisciplinaResponse(
-                codigo = it.name,
-                descricao = it.descricao
-            )
+    @PostMapping("/reset/{token}")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun resetarSenha(
+        @PathVariable token: String,
+        @RequestBody @Valid reset: ResetSenhaRequest
+    ) {
+        val userId = jwtService.getSubject(token).toInt()
+        val professor = service.findById(userId).orElseThrow {
+            IllegalArgumentException("Professor não encontrado")
         }
+        professor.senha = passwordEncoder.encode(reset.senha)
+        service.atualizar(professor)
     }
 }

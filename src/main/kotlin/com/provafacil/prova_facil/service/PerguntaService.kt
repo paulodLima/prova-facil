@@ -59,7 +59,7 @@ class PerguntaService (
         repository.save(pergunta)
     }
 
-    fun criarPergunta(dto: PostPerguntaRequest) {
+    fun criarPergunta(dto: PostPerguntaRequest, imagem: ByteArray?) {
         val serie = serieRepository.findById(dto.serie)
             .orElseThrow { RuntimeException("Série não encontrada") }
 
@@ -81,8 +81,10 @@ class PerguntaService (
             nivel = NivelDificuldade.valueOf(dto.dificuldade),
             serie = serie,
             assunto = assunto,
-            professor = professor
+            professor = professor,
+            imagem = imagem
         )
+
         dto.alternativasErradas.forEach {
             pergunta.alternativasErradas.add(
                 AlternativaErrada(

@@ -36,6 +36,7 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
 	implementation("net.sf.jasperreports:jasperreports:7.0.3")
 	implementation("net.sf.jasperreports:jasperreports-pdf:7.0.3")
+	implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 kotlin {

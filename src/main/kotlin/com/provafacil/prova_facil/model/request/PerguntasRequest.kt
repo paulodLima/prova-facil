@@ -5,6 +5,7 @@ import com.provafacil.prova_facil.model.Pergunta
 import com.provafacil.prova_facil.model.Serie
 import com.provafacil.prova_facil.model.enums.TipoPergunta
 import com.provafacil.prova_facil.model.response.AlternativaErradaResponse
+import com.provafacil.prova_facil.model.response.AssuntoResponse
 import com.provafacil.prova_facil.model.response.ProfessorResponse
 import java.time.LocalDateTime
 
@@ -19,13 +20,16 @@ data class PerguntasRequest (
 
     val respostaCorreta: String? = null,
 
+    val imagem: ByteArray? = null,
+
     val serie: Serie,
 
-    val assunto: Assunto,
+    val assunto: AssuntoResponse,
 
     val professor: ProfessorResponse,
 
     val dataCriacao: LocalDateTime,
+
 
     val alternativasErradas: List<AlternativaErradaResponse> = emptyList()
 ){
@@ -34,9 +38,10 @@ data class PerguntasRequest (
         enunciado = pergunta.enunciado,
         tipo = pergunta.tipo.name,
         serie = pergunta.serie,
-        assunto = pergunta.assunto,
+        assunto = AssuntoResponse(pergunta.assunto),
         dataCriacao = pergunta.dataCriacao,
         nivel = pergunta.nivel.toString(),
+        imagem = pergunta.imagem,
         professor = ProfessorResponse(pergunta.professor),
         respostaCorreta = pergunta.respostaCorreta,
         alternativasErradas = AlternativaErradaResponse.fromList(pergunta.alternativasErradas.sortedBy { p -> p.id })

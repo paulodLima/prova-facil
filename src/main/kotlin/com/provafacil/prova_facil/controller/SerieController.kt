@@ -1,11 +1,14 @@
 package com.provafacil.prova_facil.controller
 
 import com.provafacil.prova_facil.model.Serie
+import com.provafacil.prova_facil.model.request.PostSerieProfessorRequest
 import com.provafacil.prova_facil.model.request.PostSerieRequest
 import com.provafacil.prova_facil.model.request.PutSerieRequest
+import com.provafacil.prova_facil.model.response.SerieResponse
 import com.provafacil.prova_facil.service.SerieService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @RequestMapping("/api/serie")
@@ -15,6 +18,18 @@ class SerieController (
     @GetMapping
     fun buscarTodasSerie():List<Serie>{
         return service.buscarTodasSeries()
+    }
+
+    @GetMapping("/professor")
+    fun buscarSeriesPorProfessor(principal: Principal):List<SerieResponse>{
+        val professorId = principal.name.toInt()
+        val series = service.buscarSeriesPorProfessor(professorId)
+        return series.map { serie ->
+            SerieResponse(
+                id = serie.id,
+                nome = serie.nome
+            )
+        }
     }
 
     @GetMapping("/{id}")
@@ -37,6 +52,13 @@ class SerieController (
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun criarSerie(@RequestBody post: PostSerieRequest) {
-        service.adicionarSerie(post.toSerieModel())
+        service.adicionarSerie(post)
+    }
+
+    @PostMapping("/professor")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun criarSerie(@RequestBody post: PostSerieProfessorRequest, principal: Principal) {
+        val profId = principal.name.toInt()
+        service.adicionarSerieComProfessor(post,profId)
     }
 }

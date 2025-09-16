@@ -7,7 +7,7 @@ spring:
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -16,6 +16,36 @@ spring:
   jackson:
     default-property-inclusion: non_null
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sistemaprovafacil@gmail.com
+    password: ivkjehduiyfvcrpc
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 jwt:
   secret: 8e87a3be-40ab-4a63-9653-7356fac69aa3-1e3a3fd9-5946-455b-be17-5325c38e6d34
   expiration: 600000
+
+
+email:
+  subject:
+    account-created: "Seja bem-vindo ao Prova Facíl! Cadastre sua senha aqui"
+  body:
+    account-created: |
+      Olá, {user}<br><br>
+      Sua conta foi criada com sucesso! Para completar o processo, por favor, defina sua senha usando o seguinte link:<br><br>
+      <a href="{resetPasswordLink}">cadastre sua senha aqui</a><br><br>
+      Se você não solicitou a criação de uma conta, por favor, ignore este e-mail.
+    account-reset: |
+      Olá, {user}<br><br>
+      Segue o link para redefinir sua senha:<br><br>
+      <a href="{resetPasswordLink}">Redefina sua senha aqui</a><br><br>
+      Se você não solicitou a criação de uma conta, por favor, ignore este e-mail.

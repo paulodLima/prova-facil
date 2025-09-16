@@ -17,5 +17,9 @@ data class Disciplina(
 
     @OneToMany(mappedBy = "disciplina", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JsonManagedReference
-    val assuntos: List<Assunto> = emptyList()
+    val assuntos: List<Assunto> = emptyList(),
+
+    @ManyToMany(mappedBy = "disciplinas")
+    val professores: MutableSet<Professor> = mutableSetOf()
+
 ) : Serializable

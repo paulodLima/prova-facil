@@ -7,6 +7,6 @@ import java.util.Optional
 
 @Repository
 interface ProfessorRepository : JpaRepository<Professor, Int> {
-    fun findByEmail(email: String): Optional<Professor>
+    fun findByEmailEqualsIgnoreCase(email: String): Optional<Professor>
     fun existsByEmail(email: String): Boolean
 }

@@ -1,9 +1,7 @@
 package com.provafacil.prova_facil.service
 
 import com.provafacil.prova_facil.model.Disciplina
-import com.provafacil.prova_facil.model.Serie
 import com.provafacil.prova_facil.repository.DisciplinaRepository
-import com.provafacil.prova_facil.repository.SerieRepository
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,6 +9,8 @@ class DisciplinaService(
     private val repository: DisciplinaRepository
 ) {
     fun buscarTodasDisciplinas(): List<Disciplina> = repository.findAll().sortedBy { it.id };
+
+    fun buscarTodasDisciplinasPorProfessor(profId: Int): List<Disciplina> = repository.buscarTodasDisciplinasPorProfessor(profId).sortedBy { it.id };
 
     fun buscarDisciplinaPorId(id: Long): Disciplina = repository.findById(id).get();
 

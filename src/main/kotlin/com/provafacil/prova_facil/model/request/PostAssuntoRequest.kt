@@ -5,7 +5,7 @@ import com.provafacil.prova_facil.model.Disciplina
 
 data class PostAssuntoRequest(
     val nome: String,
-    val disciplinaId: Long
+    val disciplina: Long
 ) {
     fun toAssuntoModel(disciplina: Disciplina): Assunto {
         return Assunto(

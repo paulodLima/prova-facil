@@ -11,7 +11,7 @@ data class PostPerguntaRequest (
 
     val dificuldade: String,
 
-    val respostaCorreta: String,
+    val respostaCorreta: String ? = "",
 
     val serie: Long,
 

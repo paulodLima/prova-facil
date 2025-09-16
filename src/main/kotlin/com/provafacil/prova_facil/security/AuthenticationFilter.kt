@@ -23,7 +23,7 @@ class AuthenticationFilter(
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         try {
             val login = jacksonObjectMapper().readValue(request.inputStream, LoginRequest::class.java)
-            val id = repository.findByEmail(login.email).get().id
+            val id = repository.findByEmailEqualsIgnoreCase(login.email).get().id
 
             val authToken = UsernamePasswordAuthenticationToken(id, login.password)
             return authenticationManager.authenticate(authToken);
@@ -39,7 +39,9 @@ class AuthenticationFilter(
         authResult: Authentication?
     ) {
         val id = (authResult?.principal as UserCustomDetails).id
+        if(id != null) {
         val token = jwtUtil.generateToken(id);
         response?.addHeader("Authorization", "Bearer $token")
+        }
     }
 }

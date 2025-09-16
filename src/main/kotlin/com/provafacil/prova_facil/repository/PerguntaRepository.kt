@@ -1,6 +1,8 @@
 package com.provafacil.prova_facil.repository
 
+import com.provafacil.prova_facil.model.Assunto
 import com.provafacil.prova_facil.model.Pergunta
+import com.provafacil.prova_facil.model.Serie
 import com.provafacil.prova_facil.model.enums.NivelDificuldade
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -11,4 +13,5 @@ import org.springframework.stereotype.Repository
 interface PerguntaRepository : JpaRepository<Pergunta, Long> {
     fun findByProfessorId(professorId: Int, pageable: Pageable): Page<Pergunta>
     fun findByProfessorIdAndNivel(professorId: Int, nivel: NivelDificuldade): List<Pergunta>
+    fun findByProfessorIdAndNivelAndSerieAndAssunto(professorId: Int, nivel: NivelDificuldade, serie: Serie, assunto: Assunto): List<Pergunta>
 }

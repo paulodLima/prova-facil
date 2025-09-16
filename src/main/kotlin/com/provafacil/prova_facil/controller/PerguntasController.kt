@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.security.Principal
 
 @RestController
@@ -18,9 +19,12 @@ class PerguntasController(val service: PerguntaService) {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun buscarTodasPerguntas(@PageableDefault(page = 0, size = 10,) pegeable: Pageable,principal: Principal): Page<PerguntasRequest>? {
+    fun buscarTodasPerguntas(
+        @PageableDefault(page = 0, size = 10) pegeable: Pageable,
+        principal: Principal
+    ): Page<PerguntasRequest>? {
         val userId = principal.name.toInt();
-        return service.litarTodasPerguntasPorProfessor(pegeable,userId);
+        return service.litarTodasPerguntasPorProfessor(pegeable, userId);
     }
 
     @GetMapping("/{id}")
@@ -31,19 +35,37 @@ class PerguntasController(val service: PerguntaService) {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    fun atualizarPergunta(@RequestBody post : PerguntasResponse){
+    fun atualizarPergunta(@RequestBody post: PerguntasResponse) {
         service.atualizarPergunta(post);
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun excluirPergunta(@PathVariable id: Long){
+    fun excluirPergunta(@PathVariable id: Long) {
         service.excluirPergunta(id);
     }
 
-    @PostMapping
+    //@PostMapping
+    //@ResponseStatus(HttpStatus.OK)
+    //fun criarPergunta(@RequestBody request: PostPerguntaRequest,principal: Principal) {
+    //    request.professor =  principal.name.toInt();
+    //    service.criarPergunta(request);
+    //}
+
+    @PostMapping()
     @ResponseStatus(HttpStatus.OK)
-    fun criarPergunta(@RequestBody request: PostPerguntaRequest,principal: Principal) {
-        request.professor =  principal.name.toInt();
-        service.criarPergunta(request);
+    fun criarPergunta(
+        @RequestPart("request") request: PostPerguntaRequest,
+        @RequestPart("arquivo", required = false) arquivo: MultipartFile?,
+        principal: Principal
+    ) {
+        request.professor = principal.name.toInt()
+        var imagem: ByteArray? = null
+        if (arquivo != null && !arquivo.isEmpty) {
+            imagem = arquivo.bytes
+        }
+        service.criarPergunta(request, imagem)
+
     }
+
 }

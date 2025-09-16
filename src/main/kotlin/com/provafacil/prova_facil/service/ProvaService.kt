@@ -10,33 +10,71 @@ import com.provafacil.prova_facil.model.enums.NivelDificuldade
 import com.provafacil.prova_facil.model.request.PerguntasRequest
 import com.provafacil.prova_facil.model.request.ProvaRequest
 import com.provafacil.prova_facil.repository.PerguntaRepository
+import com.provafacil.prova_facil.util.ImgUtil
+import net.sf.jasperreports.engine.JasperCompileManager
+import net.sf.jasperreports.engine.JasperExportManager
+import net.sf.jasperreports.engine.JasperFillManager
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.io.File
 
 @Service
-class ProvaService(private val repository: PerguntaRepository) {
+class ProvaService(
+    private val repository: PerguntaRepository,
+    private val serieService: SerieService,
+    private val assuntoService: AssuntoService,
+    val imageUtil: ImgUtil,
+    private val disciplinaService: DisciplinaService
+) {
 
     fun sortearPerguntasPorProfessor(
         userId: Int,
         request: ProvaRequest
     ): List<PerguntasRequest> {
+        val perguntasPorProfessor: MutableList<Pergunta> = mutableListOf()
+        request.assunto.forEach { a ->
+            val assunto = assuntoService.buscarAssuntoPorId(a)
 
-        val faceis = embaralharAlternativas(
-            repository.findByProfessorIdAndNivel(userId, NivelDificuldade.FACIL)
-                .shuffled()
-                .take(request.facil)
-        )
-        val medias = embaralharAlternativas(
-            repository.findByProfessorIdAndNivel(userId, NivelDificuldade.MEDIO)
-                .shuffled()
-                .take(request.medio)
-        )
-        val dificieis = embaralharAlternativas(
-            repository.findByProfessorIdAndNivel(userId, NivelDificuldade.DIFICIL)
-                .shuffled()
-                .take(request.dificil)
-        )
-        return (faceis + medias + dificieis)
+            val serie = serieService.buscarSeriePorId(request.serie)
+
+            perguntasPorProfessor.addAll(
+                embaralharAlternativas(
+                    repository.findByProfessorIdAndNivelAndSerieAndAssunto(
+                        userId,
+                        NivelDificuldade.FACIL,
+                        serie,
+                        assunto
+                    )
+                        .shuffled()
+                        .take(request.facil)
+                )
+            )
+            perguntasPorProfessor.addAll(
+                embaralharAlternativas(
+                    repository.findByProfessorIdAndNivelAndSerieAndAssunto(
+                        userId,
+                        NivelDificuldade.MEDIO,
+                        serie,
+                        assunto
+                    )
+                        .shuffled()
+                        .take(request.medio)
+                )
+            )
+            perguntasPorProfessor.addAll(
+                embaralharAlternativas(
+                    repository.findByProfessorIdAndNivelAndSerieAndAssunto(
+                        userId,
+                        NivelDificuldade.DIFICIL,
+                        serie,
+                        assunto
+                    )
+                        .shuffled()
+                        .take(request.dificil)
+                )
+            )
+        }
+        return perguntasPorProfessor
             .shuffled()
             .map { PerguntasRequest(it) }
     }
@@ -57,17 +95,18 @@ class ProvaService(private val repository: PerguntaRepository) {
 
     fun gerarProva(userId: Int, request: ProvaRequest): ProvaDTO {
         val perguntas = sortearPerguntasPorProfessor(userId, request)
-
+        val disciplina = disciplinaService.buscarDisciplinaPorId(request.disciplina)
         return ProvaDTO(
             serie = perguntas.firstOrNull()?.serie?.nome ?: "",
             professor = perguntas.firstOrNull()?.professor?.nome?.uppercase() ?: "",
-            disciplina = perguntas.firstOrNull()?.professor?.disciplina?.uppercase() ?: "",
+            disciplina = disciplina.nome.uppercase(),
             perguntas = perguntas.map {
                 PerguntaDTO(
                     enunciado = it.enunciado,
                     respostaCorreta = it.respostaCorreta,
                     tipo = it.tipo,
-                    alternativas = it.alternativasErradas.map { alt -> Alternativa(alt.texto) }
+                    alternativas = it.alternativasErradas.map { alt -> Alternativa(alt.texto) },
+                    imagem = it.imagem
                 )
             }
         )

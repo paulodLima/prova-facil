@@ -13,6 +13,7 @@ import com.provafacil.prova_facil.service.AssuntoService
 import com.provafacil.prova_facil.service.DisciplinaService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @RequestMapping("/api/assunto")
@@ -21,8 +22,9 @@ class AssuntoController (
     private val disciplinaService: DisciplinaService
 ){
     @GetMapping
-    fun buscarTodasSerie():List<Assunto>{
-        return service.buscarTodosAssuntos();
+    fun buscarTodasSerie(principal: Principal):List<Assunto>{
+        val userId = principal.name.toLong();
+        return service.buscarTodosAssuntos(userId);
     }
 
     @GetMapping("/{id}")
@@ -46,7 +48,13 @@ class AssuntoController (
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun criarSerie(@RequestBody post : PostAssuntoRequest){
-        val disciplina = disciplinaService.buscarDisciplinaPorId(post.disciplinaId);
+        val disciplina = disciplinaService.buscarDisciplinaPorId(post.disciplina);
         service.adicionarAssunto(post.toAssuntoModel(disciplina));
+    }
+
+    @PostMapping("/professor")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun criarSerie(@RequestBody post : PostAssuntoRequest, principal: Principal){
+        service.adicionarAssuntoComProfessor(post,principal.name.toInt());
     }
 }

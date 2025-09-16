@@ -5,6 +5,7 @@ import com.provafacil.prova_facil.model.enums.TipoPergunta
 import com.provafacil.prova_facil.model.request.PostPerguntaRequest
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 
 @Entity
@@ -21,8 +22,7 @@ data class Pergunta(
 
     var respostaCorreta: String? = null,
 
-    @Lob
-    @Column(name = "imagem")
+    @Column(name = "imagem", columnDefinition = "bytea")
     val imagem: ByteArray? = null,
 
     @Enumerated(EnumType.STRING)
@@ -45,5 +45,41 @@ data class Pergunta(
 
     @OneToMany(mappedBy = "pergunta", cascade = [CascadeType.ALL], orphanRemoval = true)
     val alternativasErradas: MutableList<AlternativaErrada> = mutableListOf()
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Pergunta
+
+        if (id != other.id) return false
+        if (enunciado != other.enunciado) return false
+        if (tipo != other.tipo) return false
+        if (respostaCorreta != other.respostaCorreta) return false
+        if (!imagem.contentEquals(other.imagem)) return false
+        if (nivel != other.nivel) return false
+        if (serie != other.serie) return false
+        if (assunto != other.assunto) return false
+        if (professor != other.professor) return false
+        if (dataCriacao != other.dataCriacao) return false
+        if (alternativasErradas != other.alternativasErradas) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + enunciado.hashCode()
+        result = 31 * result + tipo.hashCode()
+        result = 31 * result + (respostaCorreta?.hashCode() ?: 0)
+        result = 31 * result + (imagem?.contentHashCode() ?: 0)
+        result = 31 * result + nivel.hashCode()
+        result = 31 * result + serie.hashCode()
+        result = 31 * result + assunto.hashCode()
+        result = 31 * result + professor.hashCode()
+        result = 31 * result + dataCriacao.hashCode()
+        result = 31 * result + alternativasErradas.hashCode()
+        return result
+    }
+}
 

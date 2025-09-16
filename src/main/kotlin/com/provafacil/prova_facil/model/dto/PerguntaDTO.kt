@@ -3,4 +3,5 @@ package com.provafacil.prova_facil.model.dto
 data class PerguntaDTO (val enunciado: String,
                         val respostaCorreta: String?,
                         val tipo: String,
-                        val alternativas: List<Alternativa>)
+                        val alternativas: List<Alternativa>,
+                        val imagem: ByteArray? = null)
