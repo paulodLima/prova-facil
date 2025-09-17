@@ -15,10 +15,12 @@
 	<parameter name="serie" class="java.lang.String"/>
 	<parameter name="professor" class="java.lang.String"/>
 	<parameter name="disciplina" class="java.lang.String"/>
-	<parameter name="logo" class="java.io.InputStream"/>
-	<parameter name="cepmg" class="java.io.InputStream"/>
+	<parameter name="logoSecretaria" class="byte[]"/>
+	<parameter name="logoEscola" class="byte[]"/>
 	<parameter name="dataHora" class="java.lang.String"/>
 	<parameter name="nota" class="java.lang.Long"/>
+	<parameter name="nomeEscola" class="java.lang.String"/>
+	<parameter name="estado" class="java.lang.String"/>
 	<query language="sql"><![CDATA[]]></query>
 	<field name="enunciado" class="java.lang.String"/>
 	<field name="alternativas" class="java.util.List"/>
@@ -27,27 +29,25 @@
 	<variable name="Variable_1" class="java.lang.String"/>
 	<background splitType="Stretch"/>
 	<title height="213" splitType="Stretch">
-		<element kind="staticText" uuid="b1fc1893-e758-4e9b-bc6b-746e99473991" x="92" y="40" width="370" height="40" fontSize="12.0" bold="true">
-			<text><![CDATA[COLÉGIO ESTADUAL DA POLÍCIA MILITAR DE GOIÁS MARIA D´
-	          ABADIA GOMES MEIRELLES SHINOHARA]]></text>
+		<element kind="staticText" uuid="b1fc1893-e758-4e9b-bc6b-746e99473991" x="92" y="40" width="378" height="40" fontSize="12.0" bold="true">
+			<text><![CDATA[]]></text>
 		</element>
 		<element kind="image" uuid="087f2756-bf78-40af-a081-e4f9cfec717d" x="484" y="20" width="60" height="60" linkType="None" linkTarget="Self">
-			<expression><![CDATA[$P{logo}]]></expression>
+			<expression><![CDATA[$P{logoSecretaria}]]></expression>
 			<property name="com.jaspersoft.studio.unit.width" value="px"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 		</element>
 		<element kind="textField" uuid="6597b4d4-0dc1-4087-b415-a0b8515dd39d" x="11" y="100" width="532" height="20" fontSize="13.0" linkType="None" linkTarget="Self" bold="true">
-			<expression><![CDATA["Avaliação Bimestral de " + $P{disciplina}]]></expression>
+			<expression><![CDATA["Avaliação Bimestral De " + $P{disciplina}]]></expression>
 		</element>
-		<element kind="staticText" uuid="3fa77811-2fcc-487e-a23e-95b57cd33d7b" x="140" y="10" width="274" height="30" fontSize="9.0" bold="true" hTextAlign="Center">
-			<text><![CDATA[ESTADO DE GOIÁS
-SECRETARIA DE EDUCAÇÃO, CULTURA E ESPORTE]]></text>
+		<element kind="staticText" uuid="3fa77811-2fcc-487e-a23e-95b57cd33d7b" x="140" y="20" width="274" height="20" fontSize="9.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[SECRETARIA DE EDUCAÇÃO, CULTURA E ESPORTE]]></text>
 		</element>
 		<element kind="line" uuid="7822d140-51b5-43c9-866a-fef53c79e6db" mode="Transparent" x="11" y="90" width="533" height="1">
 			<pen lineColor="rgba(0, 0, 0, 0.39607844)"/>
 		</element>
 		<element kind="image" uuid="f87b5c09-069b-4922-a75b-a63922639fcf" x="11" y="20" width="60" height="60" linkType="None" linkTarget="Self">
-			<expression><![CDATA[$P{cepmg}]]></expression>
+			<expression><![CDATA[$P{logoEscola}]]></expression>
 			<property name="com.jaspersoft.studio.unit.width" value="px"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 		</element>
@@ -78,11 +78,17 @@ SECRETARIA DE EDUCAÇÃO, CULTURA E ESPORTE]]></text>
 		<element kind="staticText" uuid="6c54ee32-1aea-4180-83f3-c9c88542a452" x="370" y="160" width="174" height="20" fontSize="11.0" bold="false">
 			<text><![CDATA[Número:______     Data:________]]></text>
 		</element>
-		<element kind="staticText" uuid="3c135aa7-4c4a-4f45-9184-911cc43f5bd0" x="330" y="140" width="40" height="20" fontSize="12.0" bold="false">
+		<element kind="staticText" uuid="3c135aa7-4c4a-4f45-9184-911cc43f5bd0" x="310" y="140" width="40" height="20" fontSize="12.0" bold="false">
 			<text><![CDATA[Valor: ]]></text>
 		</element>
-		<element kind="textField" uuid="4e43477f-404e-4a94-9ca1-fab28aa74c64" x="363" y="140" width="114" height="20" fontSize="12.0">
+		<element kind="textField" uuid="4e43477f-404e-4a94-9ca1-fab28aa74c64" x="343" y="140" width="114" height="20" fontSize="12.0">
 			<expression><![CDATA[$P{nota}]]></expression>
+		</element>
+		<element kind="textField" uuid="c2e48a92-e95b-4237-a878-b45d577f3336" x="92" y="40" width="378" height="40" fontSize="12.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{nomeEscola}]]></expression>
+		</element>
+		<element kind="textField" uuid="383c5c44-8434-427a-883d-81387d89e8da" x="140" y="8" width="274" height="12" fontSize="9.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{estado}]]></expression>
 		</element>
 	</title>
 	<detail>

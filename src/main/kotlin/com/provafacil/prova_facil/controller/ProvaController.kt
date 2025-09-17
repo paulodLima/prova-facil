@@ -27,7 +27,6 @@ class ProvaController(val provaService: ProvaService, val resourceLoader: Resour
     fun gerarProva(@RequestBody request: ProvaRequest, principal: Principal): ResponseEntity<List<PerguntasRequest>> {
         val userId = principal.name.toInt();
         val perguntas: List<PerguntasRequest> = provaService.sortearPerguntasPorProfessor(userId, request);
-        println("Perguntas sorteadas: $perguntas")
         return ResponseEntity.status(HttpStatus.OK).body(perguntas)
     }
 
@@ -43,8 +42,10 @@ class ProvaController(val provaService: ProvaService, val resourceLoader: Resour
         val resource = resourceLoader.getResource("classpath:relatoriosjasper/prova.jasper")
         val inputStream = resource.inputStream
         val parametros = mapOf(
-            "logo" to this::class.java.getResourceAsStream("/imagens/seduc.png"),
-            "cepmg" to this::class.java.getResourceAsStream("/imagens/CEPMG.png"),
+            "logoSecretaria" to prova.logoSecretaria,
+            "logoEscola" to prova.logoEscola,
+            "nomeEscola" to prova.nomeEscola,
+            "estado" to prova.estado,
             "serie" to prova.serie,
             "nota" to request.nota,
             "professor" to prova.professor,

@@ -98,8 +98,17 @@ class ProvaService(
         val disciplina = disciplinaService.buscarDisciplinaPorId(request.disciplina)
         return ProvaDTO(
             serie = perguntas.firstOrNull()?.serie?.nome ?: "",
-            professor = perguntas.firstOrNull()?.professor?.nome?.uppercase() ?: "",
-            disciplina = disciplina.nome.uppercase(),
+            professor = perguntas.firstOrNull()?.professor?.nome
+                ?.lowercase()
+                ?.replaceFirstChar { it.uppercase() }
+                ?: "",
+            disciplina = disciplina.nome.lowercase()
+                .replaceFirstChar { it.uppercase() }
+                ?: "",
+            logoSecretaria = perguntas.firstOrNull()?.logoSecretaria,
+            logoEscola = perguntas.firstOrNull()?.logoEscola,
+            nomeEscola = perguntas.firstOrNull()?.nomeEscola?.uppercase() ?: "",
+            estado = perguntas.firstOrNull()?.estado?.uppercase() ?: "",
             perguntas = perguntas.map {
                 PerguntaDTO(
                     enunciado = it.enunciado,

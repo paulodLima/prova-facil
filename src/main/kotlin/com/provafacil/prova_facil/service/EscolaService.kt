@@ -20,7 +20,7 @@ class EscolaService(
         repository.save(escola);
     }
 
-    fun criarEscola(request: PostEscolaRequest, imagens: List<MultipartFile>?) {
+    fun criarEscola(request: PostEscolaRequest, imagens: List<MultipartFile>?): Escola {
         val escola = request.toEscolaModel()
 
         imagens?.forEach { imagem ->
@@ -33,6 +33,6 @@ class EscolaService(
             }
         }
 
-        repository.save(escola)
+        return repository.save(escola)
     }
 }

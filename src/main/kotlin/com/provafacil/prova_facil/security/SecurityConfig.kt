@@ -32,7 +32,8 @@ class SecurityConfig(
         "/api/disciplina",
         "/api/serie",
         "/api/serie/professor",
-        "/login"
+        "/login",
+        "/api/escola"
     )
 
     @Bean

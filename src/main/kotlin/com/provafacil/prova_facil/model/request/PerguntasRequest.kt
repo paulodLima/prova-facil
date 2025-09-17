@@ -19,6 +19,10 @@ data class PerguntasRequest (
 
     val nivel: String,
 
+    val nomeEscola: String,
+
+    val estado: String,
+
     val respostaCorreta: String? = null,
 
     val imagem: ByteArray? = null,
@@ -30,6 +34,10 @@ data class PerguntasRequest (
     val disciplina: DisciplinaResponse,
 
     val professor: ProfessorResponse,
+
+    var logoEscola: ByteArray? = null,
+
+    var logoSecretaria: ByteArray? = null,
 
     val dataCriacao: LocalDateTime,
 
@@ -47,6 +55,10 @@ data class PerguntasRequest (
         nivel = pergunta.nivel.toString(),
         imagem = pergunta.imagem,
         professor = ProfessorResponse(pergunta.professor),
+        logoSecretaria = pergunta.professor.escola?.logoSecretaria,
+        logoEscola = pergunta.professor.escola?.logoEscola,
+        nomeEscola = pergunta.professor.escola?.nome.toString(),
+        estado = pergunta.professor.escola?.estado.toString(),
         respostaCorreta = pergunta.respostaCorreta,
         alternativasErradas = AlternativaErradaResponse.fromList(pergunta.alternativasErradas.sortedBy { p -> p.id })
     )
