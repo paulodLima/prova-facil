@@ -8,15 +8,12 @@ data class PostEscolaRequest (
     val email: String,
 
     val estado: String,
-
-    val secretaria: String,
 ) {
     fun toEscolaModel(): Escola {
         return Escola(
             nome = this.nome,
             email = this.email,
             estado = this.estado,
-            secretaria = this.secretaria
         )
 
     }

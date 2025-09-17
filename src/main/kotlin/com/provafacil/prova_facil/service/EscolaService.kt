@@ -24,10 +24,12 @@ class EscolaService(
         val escola = request.toEscolaModel()
 
         imagens?.forEach { imagem ->
-            if (imagem.name.contains("logo", ignoreCase = true)) {
-                escola.logoEscola = imagem.bytes
-            } else {
-                escola.logoSecretaria = imagem.bytes
+            imagem.originalFilename?.let {
+                if (it.contains("logoEscola", ignoreCase = true)) {
+                    escola.logoEscola = imagem.bytes
+                } else {
+                    escola.logoSecretaria = imagem.bytes
+                }
             }
         }
 

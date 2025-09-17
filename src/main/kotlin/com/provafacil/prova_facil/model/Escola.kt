@@ -21,8 +21,6 @@ data class Escola(
 
     val estado: String,
 
-    var secretaria: String,
-
     @Column(name = "logoEscola", columnDefinition = "bytea")
     var logoEscola: ByteArray? = null,
 
