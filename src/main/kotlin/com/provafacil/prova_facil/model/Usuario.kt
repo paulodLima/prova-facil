@@ -2,32 +2,36 @@ package com.provafacil.prova_facil.model
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.provafacil.prova_facil.model.enums.Roles
+import com.provafacil.prova_facil.model.enums.UsuarioTipo
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "professor", schema = "provas_db")
-data class Professor(
+@Table(name = "usuario", schema = "provas_db")
+data class Usuario(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0,
 
-    val nome: String,
+    var nome: String,
 
     @Column(unique = true)
-    val email: String,
+    var email: String,
 
     var senha: String,
 
     @ElementCollection(targetClass = Roles::class, fetch = FetchType.EAGER)
     @CollectionTable(
-        name = "professor_roles", schema = "provas_db",
-        joinColumns = [JoinColumn(name = "professor_id")]
+        name = "usuario_roles", schema = "provas_db",
+        joinColumns = [JoinColumn(name = "usuario_id")]
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "roles")
     val roles: MutableSet<Roles> = mutableSetOf(),
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    val tipo: UsuarioTipo,
 
     @ManyToMany
     @JoinTable(
@@ -49,5 +53,5 @@ data class Professor(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "escola_id")
     @JsonBackReference
-    val escola: Escola? = null
+    var escola: Escola? = null
 )

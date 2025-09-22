@@ -12,7 +12,7 @@ data class  Serie(
     val nome: String,
 
     @ManyToMany(mappedBy = "series")
-    val professores: MutableSet<Professor> = mutableSetOf()
+    val professores: MutableSet<Usuario> = mutableSetOf()
 ){
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

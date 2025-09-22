@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 @ControllerAdvice
 class ControllerAdvice {
@@ -15,7 +16,7 @@ class ControllerAdvice {
     fun handleNotFoundException(e: NotFoundException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             HttpStatus.NOT_FOUND.value(),
-            e.message ?: e.localizedMessage,
+            e.message,
             e.errorCode,
             null
         )
@@ -25,7 +26,7 @@ class ControllerAdvice {
     fun handleBadRequestException(e: BadRequestException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
-            e.message ?: e.localizedMessage,
+            e.message,
             e.errorCode,
             null
         )
@@ -47,4 +48,14 @@ class ControllerAdvice {
         return ResponseEntity(error, HttpStatus.UNPROCESSABLE_ENTITY)
     }
 
+    @ExceptionHandler(MaxUploadSizeExceededException::class)
+    fun handleMaxUploadSizeExceededException(e: MaxUploadSizeExceededException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            "O arquivo enviado ultrapassa o limite permitido de upload.",
+            "UPLOAD_SIZE_EXCEEDED",
+            null
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
 }

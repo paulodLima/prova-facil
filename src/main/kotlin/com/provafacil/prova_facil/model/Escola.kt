@@ -1,9 +1,6 @@
 package com.provafacil.prova_facil.model
 
-import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
-import com.provafacil.prova_facil.model.enums.Roles
 import jakarta.persistence.*
 
 @Entity
@@ -14,12 +11,12 @@ data class Escola(
     val id: Int = 0,
 
     @Column(unique = true)
-    val nome: String,
+    var nome: String,
 
     @Column(unique = true)
-    val email: String,
+    var email: String,
 
-    val estado: String,
+    var estado: String,
 
     @Column(name = "logoEscola", columnDefinition = "bytea")
     var logoEscola: ByteArray? = null,
@@ -29,5 +26,5 @@ data class Escola(
 
     @OneToMany(mappedBy = "escola", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JsonManagedReference
-    val professores: MutableList<Professor> = mutableListOf()
+    val professores: MutableList<Usuario> = mutableListOf()
 )

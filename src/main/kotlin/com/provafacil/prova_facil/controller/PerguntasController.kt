@@ -20,11 +20,10 @@ class PerguntasController(val service: PerguntaService) {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun buscarTodasPerguntas(
-        @PageableDefault(page = 0, size = 10) pegeable: Pageable,
         principal: Principal
     ): Page<PerguntasRequest>? {
         val userId = principal.name.toInt();
-        return service.litarTodasPerguntasPorProfessor(pegeable, userId);
+        return service.litarTodasPerguntasPorProfessor(userId);
     }
 
     @GetMapping("/{id}")

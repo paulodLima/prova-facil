@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface PerguntaRepository : JpaRepository<Pergunta, Long> {
-    fun findByProfessorId(professorId: Int, pageable: Pageable): Page<Pergunta>
-    fun findByProfessorIdAndNivel(professorId: Int, nivel: NivelDificuldade): List<Pergunta>
-    fun findByProfessorIdAndNivelAndSerieAndAssunto(professorId: Int, nivel: NivelDificuldade, serie: Serie, assunto: Assunto): List<Pergunta>
+    fun findByUsuarioId(professorId: Int): List<Pergunta>
+    fun findByUsuarioIdAndNivel(professorId: Int, nivel: NivelDificuldade): List<Pergunta>
+    fun findByUsuarioIdAndNivelAndSerieAndAssunto(professorId: Int, nivel: NivelDificuldade, serie: Serie, assunto: Assunto): List<Pergunta>
 }

@@ -20,6 +20,6 @@ data class Disciplina(
     val assuntos: List<Assunto> = emptyList(),
 
     @ManyToMany(mappedBy = "disciplinas")
-    val professores: MutableSet<Professor> = mutableSetOf()
+    val professores: MutableSet<Usuario> = mutableSetOf()
 
 ) : Serializable

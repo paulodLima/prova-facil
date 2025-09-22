@@ -18,17 +18,27 @@ class EmailService(
     private val url = "http://localhost:4200/auth/reset"
     private val log = LoggerFactory.getLogger(EmailService::class.java)
 
-    fun enviarMennsagemParaCriarSenha(id: Int?, email: String, nome: String) {
+    fun enviarMensagemParaCriarSenha(id: Int?, email: String, nome: String, recuperarSenha: Boolean) {
         if (id != null) {
             val token = jwtUtil.generateToken(id);
-            val subject = emailProperties.subject.accountCreated
-            val bodyTemplate = emailProperties.body.accountCreated
+            if (!recuperarSenha) {
+                val subject = emailProperties.subject.accountCreated
+                val bodyTemplate = emailProperties.body.accountCreated
 
-            val body = bodyTemplate
-                .replace("{user}", nome)
-                .replace("{resetPasswordLink}", "$url/$token")
+                val body = bodyTemplate
+                    .replace("{user}", nome)
+                    .replace("{resetPasswordLink}", "$url/$token")
+                sendEmail(email, subject, body)
+            } else {
+                val subject = emailProperties.subject.accountCreated
+                val bodyTemplate = emailProperties.body.accountReset
 
-            sendEmail(email, subject, body)
+                val body = bodyTemplate
+                    .replace("{user}", nome)
+                    .replace("{resetPasswordLink}", "$url/$token")
+                sendEmail(email, subject, body)
+            }
+
         }
     }
 

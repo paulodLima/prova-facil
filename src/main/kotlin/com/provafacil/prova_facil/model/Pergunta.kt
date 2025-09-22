@@ -2,10 +2,8 @@ package com.provafacil.prova_facil.model
 
 import com.provafacil.prova_facil.model.enums.NivelDificuldade
 import com.provafacil.prova_facil.model.enums.TipoPergunta
-import com.provafacil.prova_facil.model.request.PostPerguntaRequest
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 
 @Entity
@@ -38,7 +36,7 @@ data class Pergunta(
 
     @ManyToOne
     @JoinColumn(name = "professor_id")
-    val professor: Professor,
+    val usuario: Usuario,
 
     @CreationTimestamp
     val dataCriacao: LocalDateTime = LocalDateTime.now(),
@@ -60,7 +58,7 @@ data class Pergunta(
         if (nivel != other.nivel) return false
         if (serie != other.serie) return false
         if (assunto != other.assunto) return false
-        if (professor != other.professor) return false
+        if (usuario != other.usuario) return false
         if (dataCriacao != other.dataCriacao) return false
         if (alternativasErradas != other.alternativasErradas) return false
 
@@ -76,7 +74,7 @@ data class Pergunta(
         result = 31 * result + nivel.hashCode()
         result = 31 * result + serie.hashCode()
         result = 31 * result + assunto.hashCode()
-        result = 31 * result + professor.hashCode()
+        result = 31 * result + usuario.hashCode()
         result = 31 * result + dataCriacao.hashCode()
         result = 31 * result + alternativasErradas.hashCode()
         return result

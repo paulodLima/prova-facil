@@ -39,7 +39,7 @@ class ProvaService(
 
             perguntasPorProfessor.addAll(
                 embaralharAlternativas(
-                    repository.findByProfessorIdAndNivelAndSerieAndAssunto(
+                    repository.findByUsuarioIdAndNivelAndSerieAndAssunto(
                         userId,
                         NivelDificuldade.FACIL,
                         serie,
@@ -51,7 +51,7 @@ class ProvaService(
             )
             perguntasPorProfessor.addAll(
                 embaralharAlternativas(
-                    repository.findByProfessorIdAndNivelAndSerieAndAssunto(
+                    repository.findByUsuarioIdAndNivelAndSerieAndAssunto(
                         userId,
                         NivelDificuldade.MEDIO,
                         serie,
@@ -63,7 +63,7 @@ class ProvaService(
             )
             perguntasPorProfessor.addAll(
                 embaralharAlternativas(
-                    repository.findByProfessorIdAndNivelAndSerieAndAssunto(
+                    repository.findByUsuarioIdAndNivelAndSerieAndAssunto(
                         userId,
                         NivelDificuldade.DIFICIL,
                         serie,

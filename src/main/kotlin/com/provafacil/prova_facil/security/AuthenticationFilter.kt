@@ -2,8 +2,9 @@ package com.provafacil.prova_facil.security
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.provafacil.prova_facil.exceptions.AuthenticationException
+import com.provafacil.prova_facil.model.request.CustomUserDetails
 import com.provafacil.prova_facil.model.request.LoginRequest
-import com.provafacil.prova_facil.repository.ProfessorRepository
+import com.provafacil.prova_facil.repository.UsuarioRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -14,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 class AuthenticationFilter(
     authenticationManager: AuthenticationManager,
-    private val repository: ProfessorRepository,
+    private val repository: UsuarioRepository,
     private val jwtUtil: JwtUtil
 ) : UsernamePasswordAuthenticationFilter() {
     init {
@@ -23,10 +24,18 @@ class AuthenticationFilter(
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         try {
             val login = jacksonObjectMapper().readValue(request.inputStream, LoginRequest::class.java)
-            val id = repository.findByEmailEqualsIgnoreCase(login.email).get().id
+            val professor = repository.findByEmailEqualsIgnoreCase(login.email).orElseThrow { AuthenticationException("Usuário não encontrado", "98") }
+            val userDetails = CustomUserDetails(
+                id = professor.id,
+                nome = professor.nome,
+                email = professor.email,
+                senha = professor.senha,
+                roles = professor.roles
+            )
 
-            val authToken = UsernamePasswordAuthenticationToken(id, login.password)
-            return authenticationManager.authenticate(authToken);
+            val authToken = UsernamePasswordAuthenticationToken(userDetails.id, login.password, userDetails.authorities)
+            return authenticationManager.authenticate(authToken)
+
         } catch (ex: Exception) {
             throw AuthenticationException("Falha ao authentication","99")
         }
@@ -56,10 +65,21 @@ class AuthenticationFilter(
         chain: FilterChain?,
         authResult: Authentication?
     ) {
-        val id = (authResult?.principal as UserCustomDetails).id
-        if(id != null) {
-        val token = jwtUtil.generateToken(id);
+        val user = authResult?.principal as UserCustomDetails
+        val token = jwtUtil.generateToken(user.id)
+
         response?.addHeader("Authorization", "Bearer $token")
-        }
+
+        val body = mapOf(
+            "id" to user.id,
+            "nome" to user.usuarioModel.nome,
+            "email" to user.usuarioModel.email,
+            "roles" to user.usuarioModel.roles.map { it.name },
+            "token" to token
+        )
+
+        response?.contentType = "application/json"
+        response?.writer?.write(jacksonObjectMapper().writeValueAsString(body))
+        response?.writer?.flush()
     }
 }

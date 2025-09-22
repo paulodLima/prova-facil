@@ -1,12 +1,12 @@
 package com.provafacil.prova_facil.model.request
 
-import com.provafacil.prova_facil.model.Disciplina
-import com.provafacil.prova_facil.model.Professor
+import com.provafacil.prova_facil.model.Usuario
+import com.provafacil.prova_facil.model.enums.UsuarioTipo
 import com.provafacil.prova_facil.validation.EmailAvailable
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 
-data class PostProfessorRequest(
+data class PostProfessorResponse(
     @field:NotEmpty(message = "Nome deve ser preenchido")
     val nome: String,
 
@@ -21,15 +21,20 @@ data class PostProfessorRequest(
     val disciplina: List<Long>,
 
     val serie: List<Long>,
+
+    val escola: String,
+
+    val tipo: UsuarioTipo
 ) {
-    fun toProfessorModel(): Professor {
+    fun toProfessorModel(): Usuario {
         if (nome.isBlank() || email.isBlank() || senha.isBlank()) {
             throw IllegalArgumentException("Nome, email e senha são obrigatórios.")
         }
-        return Professor (
+        return Usuario (
             nome = this.nome,
             email = this.email,
             senha = this.senha,
+            tipo = this.tipo
         )
     }
 }

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserDetailsCustomService(
-    private val professorService: ProfessorService
+    private val usuarioService: UsuarioService
 ) : UserDetailsService {
     override fun loadUserByUsername(id: String): UserDetails {
         val result =
-            professorService.findById(id.toInt())
+            usuarioService.findById(id.toInt())
                 .orElseThrow { AuthenticationException("Usuario não encontrado", "999") }
         return UserCustomDetails(result)
     }

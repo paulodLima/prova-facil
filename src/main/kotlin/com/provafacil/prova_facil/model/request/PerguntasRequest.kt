@@ -1,9 +1,7 @@
 package com.provafacil.prova_facil.model.request
 
-import com.provafacil.prova_facil.model.Assunto
 import com.provafacil.prova_facil.model.Pergunta
 import com.provafacil.prova_facil.model.Serie
-import com.provafacil.prova_facil.model.enums.TipoPergunta
 import com.provafacil.prova_facil.model.response.AlternativaErradaResponse
 import com.provafacil.prova_facil.model.response.AssuntoResponse
 import com.provafacil.prova_facil.model.response.DisciplinaResponse
@@ -41,7 +39,6 @@ data class PerguntasRequest (
 
     val dataCriacao: LocalDateTime,
 
-
     val alternativasErradas: List<AlternativaErradaResponse> = emptyList()
 ){
     constructor(pergunta: Pergunta) : this(
@@ -54,11 +51,11 @@ data class PerguntasRequest (
         dataCriacao = pergunta.dataCriacao,
         nivel = pergunta.nivel.toString(),
         imagem = pergunta.imagem,
-        professor = ProfessorResponse(pergunta.professor),
-        logoSecretaria = pergunta.professor.escola?.logoSecretaria,
-        logoEscola = pergunta.professor.escola?.logoEscola,
-        nomeEscola = pergunta.professor.escola?.nome.toString(),
-        estado = pergunta.professor.escola?.estado.toString(),
+        professor = ProfessorResponse(pergunta.usuario),
+        logoSecretaria = pergunta.usuario.escola?.logoSecretaria,
+        logoEscola = pergunta.usuario.escola?.logoEscola,
+        nomeEscola = pergunta.usuario.escola?.nome.toString(),
+        estado = pergunta.usuario.escola?.estado.toString(),
         respostaCorreta = pergunta.respostaCorreta,
         alternativasErradas = AlternativaErradaResponse.fromList(pergunta.alternativasErradas.sortedBy { p -> p.id })
     )

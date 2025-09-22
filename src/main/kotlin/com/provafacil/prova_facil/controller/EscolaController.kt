@@ -23,6 +23,12 @@ class EscolaController(
         return escola.map { EscolaResponse(it) }
     }
 
+    @GetMapping("/{id}")
+    fun buscarEscolaPorId(@PathVariable id: Int): EscolaResponse {
+        val escola = service.buscarEscolaPorId(id);
+        return EscolaResponse(escola)
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     fun criarPergunta(
@@ -30,5 +36,15 @@ class EscolaController(
         @RequestPart("arquivos", required = false) arquivos: List<MultipartFile>?
     ): Escola {
         return service.criarEscola(request, arquivos)
+    }
+
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun criarPergunta(
+        @PathVariable id: Int,
+        @RequestPart("request") request: PostEscolaRequest,
+        @RequestPart("arquivos", required = false) arquivos: List<MultipartFile>?
+    ): Escola {
+        return service.atualizarEscola(id,request, arquivos)
     }
 }

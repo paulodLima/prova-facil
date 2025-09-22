@@ -1,6 +1,6 @@
 package com.provafacil.prova_facil.security
 
-import com.provafacil.prova_facil.repository.ProfessorRepository
+import com.provafacil.prova_facil.repository.UsuarioRepository
 import com.provafacil.prova_facil.service.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -20,7 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class SecurityConfig(
     @Lazy private val userDetails: UserDetailsCustomService,
-    private val professorRepository: ProfessorRepository,
+    private val usuarioRepository: UsuarioRepository,
     private val jwtUtil: JwtUtil
 ) {
     private val PUBLIC_MATHCHERS = arrayOf<String>(
@@ -29,6 +29,8 @@ class SecurityConfig(
     private val PUBLIC_POST_MATHCHERS = arrayOf(
         "/api/professor",
         "/api/professor/reset/**",
+        "/api/escola/**",
+        "/api/professor/reset",
         "/api/disciplina",
         "/api/serie",
         "/api/serie/professor",
@@ -54,7 +56,7 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity, authConfig: AuthenticationConfiguration): SecurityFilterChain {
         val authManager = authConfig.authenticationManager
 
-        val authFilter = AuthenticationFilter(authManager, professorRepository,jwtUtil)
+        val authFilter = AuthenticationFilter(authManager, usuarioRepository,jwtUtil)
 
         http
             .csrf { it.disable() }

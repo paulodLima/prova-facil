@@ -17,14 +17,14 @@ class PerguntaService (
     private val repository: PerguntaRepository,
     private val serieRepository: SerieRepository,
     private val assuntoRepository: AssuntoRepository,
-    private val professorRepository: ProfessorRepository,
+    private val usuarioRepository: UsuarioRepository,
     private val alternativaErradaRepository: AlternativaErradaRepository
 ){
     fun litarTodasPerguntas(pegeable: Pageable, userId: Long): Page<PerguntasRequest>? {
         return repository.findAll(pegeable).map { PerguntasRequest(it) }
     }
-    fun litarTodasPerguntasPorProfessor(pegeable: Pageable, userId: Int): Page<PerguntasRequest>? {
-        return repository.findByProfessorId(userId,pegeable).map { PerguntasRequest(it) }
+    fun litarTodasPerguntasPorProfessor(userId: Int): List<PerguntasRequest>? {
+        return repository.findByUsuarioId(userId).map { PerguntasRequest(it) }
     }
 
     fun buscarPorId(id: Long): PerguntasRequest {
@@ -66,7 +66,7 @@ class PerguntaService (
         val assunto = assuntoRepository.findById(dto.assunto)
             .orElseThrow { RuntimeException("Assunto não encontrado") }
 
-        val professor = professorRepository.findById(dto.professor)
+        val professor = usuarioRepository.findById(dto.professor)
             .orElseThrow { RuntimeException("Professor não encontrado") }
 
 
@@ -81,7 +81,7 @@ class PerguntaService (
             nivel = NivelDificuldade.valueOf(dto.dificuldade),
             serie = serie,
             assunto = assunto,
-            professor = professor,
+            usuario = professor,
             imagem = imagem
         )
 

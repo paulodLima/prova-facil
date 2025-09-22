@@ -1,25 +1,22 @@
 package com.provafacil.prova_facil.controller
 
-import com.provafacil.prova_facil.model.Disciplina
-import com.provafacil.prova_facil.model.request.PostProfessorRequest
+import com.provafacil.prova_facil.model.request.PostProfessorResponse
 import com.provafacil.prova_facil.model.request.PutProfessorRequest
 import com.provafacil.prova_facil.model.request.ResetSenhaRequest
-import com.provafacil.prova_facil.model.response.DisciplinaResponse
 import com.provafacil.prova_facil.model.response.ProfessorResponse
 import com.provafacil.prova_facil.security.JwtUtil
 import com.provafacil.prova_facil.service.DisciplinaService
-import com.provafacil.prova_facil.service.ProfessorService
+import com.provafacil.prova_facil.service.UsuarioService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
-import java.security.Principal
 
 @RestController
 @RequestMapping("api/professor", produces = [MediaType.APPLICATION_JSON_VALUE])
-class ProfessorController(val service: ProfessorService, val disciplinaService: DisciplinaService,
-                          private val passwordEncoder: PasswordEncoder,private val jwtService: JwtUtil) {
+class UsuarioController(val service: UsuarioService, val disciplinaService: DisciplinaService,
+                        private val passwordEncoder: PasswordEncoder, private val jwtService: JwtUtil) {
 
     @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
@@ -54,12 +51,12 @@ class ProfessorController(val service: ProfessorService, val disciplinaService: 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun adicionarProfessor(@RequestBody @Valid professor: PostProfessorRequest) {
-        service.adicionarProfessor(professor);
+    fun adicionarProfessor(@RequestBody @Valid professor: PostProfessorResponse) {
+        service.adicionarUsuario(professor);
     }
 
     @PostMapping("/reset/{token}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     fun resetarSenha(
         @PathVariable token: String,
         @RequestBody @Valid reset: ResetSenhaRequest
@@ -70,5 +67,13 @@ class ProfessorController(val service: ProfessorService, val disciplinaService: 
         }
         professor.senha = passwordEncoder.encode(reset.senha)
         service.atualizar(professor)
+    }
+
+    @GetMapping("/reset/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    fun recuperSenha(
+       @PathVariable email: String,
+    ) {
+        service.recuperarSenha(email)
     }
 }
